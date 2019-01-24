@@ -14,26 +14,16 @@ app.use(express.static(PublicPath));
 // socking is listening when the connection is stablished server -> user
 io.on('connection', (socket) => {
 	// consoles when someone accesses localhost:3000
-	console.log('New user connect');
-
-	socket.emit('newEmail', {
-		from: 'peter@example.com',
-		text: 'Hey, whats going on',
-		createdAt: 123
-	});
-
-	// socket.on('createEmail', (newEmail) => {
-	// 	console.log('createEmail', newEmail);
-	// });
-
-	socket.emit('newMessage', {
-		from:'pete',
-		text: 'wow',
-		createdAt: 145
-	});
-
+	console.log('New user connected');
+	
 	socket.on('createMessage', (message) => {
 		console.log('createMessage', message);
+		// io sends the data to every single connect
+		io.emit('newMessage', {
+			from: message.from,
+			text: message.text,
+			createdAt: new Date().getTime()
+		});
 	});
 
 	// consoles when someone closes the localhost:3000 tab
