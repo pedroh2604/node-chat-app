@@ -44,12 +44,15 @@ jQuery('#message-form').on('submit', function(e) {
 	// prevent the page from reloading when the form is sent
 	e.preventDefault();
 
+	var messageTextbox = jQuery('[name=message]');
+
 	// takes the value from the field and send it as a new message
 	socket.emit('createMessage', {
 		from: 'User',
-		text: jQuery('[name=message]').val()
+		text: messageTextbox.val()
 	}, function () {
-
+		// clears the textBox after the message is sent
+		messageTextbox.val('');
 	});
 });
 
@@ -60,13 +63,19 @@ locationButton.on('click', function () {
 		return alert('Geolocation nor supported by your browser');
 	}
 
+	// disables the button after clicking it once
+	locationButton.attr('disabled', 'disabled').text('Sending location...');
+
 	navigator.geolocation.getCurrentPosition(function (position) {
 		//console.log(position);
+		// enables the location button
+		locationButton.removeAttr('disabled').text('Send location');
 		socket.emit('createLocationMessage', {
 			latitude: position.coords.latitude,
 			longitude: position.coords.longitude
 		});
 	}, function () {
+		locationButton.removeAttr('disabled').text('Send location');
 		alert('Unable to fetch location.')
 	});
 });
