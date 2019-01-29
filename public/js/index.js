@@ -1,5 +1,23 @@
 var socket = io();
 
+// autoScroll to see new messages
+function scrollToBottom() {
+	// Selectors
+	var messages = jQuery('#messages');
+	var newMessage = messages.children('li:last-child');
+
+	//Heights
+	var clientHeight = messages.prop('clientHeight');
+	var scrollTop = messages.prop('scrollTop');
+	var scrollHeight = messages.prop('scrollHeight');
+	var newMessageHeight = newMessage.innerHeight();
+	var lasMessageHeight = newMessage.prev().innerHeight();
+
+	if (clientHeight + scrollTop + newMessageHeight + lasMessageHeight >= scrollHeight) {
+		messages.scrollTop(scrollHeight);
+	}
+}
+
 // when a user connects to the app (new tab open)
 socket.on('connect', function () {
 	console.log('connected to server');
@@ -23,6 +41,7 @@ socket.on('newMessage', function (message) {
 	});
 
 	jQuery('#messages').append(html);
+	scrollToBottom();
 
 	//console.log('New message', message);
 	// var formattedTime = moment(message.createdAt).format('h:mm a');
@@ -43,7 +62,8 @@ socket.on('newLocationMessage', function (message) {
 		createdAt: formattedTime
 	});
 
-	jQuery('#messages').append(html)
+	jQuery('#messages').append(html);
+	scrollToBottom();
 
 	// var formattedTime = moment(message.createdAt).format('h:mm a');
 	// var li = jQuery('<li></li>');
