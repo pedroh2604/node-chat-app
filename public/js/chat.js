@@ -118,7 +118,6 @@ jQuery('#message-form').on('submit', function(e) {
 
 	// takes the value from the field and send it as a new message
 	socket.emit('createMessage', {
-		from: 'User',
 		text: messageTextbox.val()
 	}, function () {
 		// clears the textBox after the message is sent
