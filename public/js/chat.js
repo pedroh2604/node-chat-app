@@ -21,6 +21,32 @@ function scrollToBottom() {
 // when a user connects to the app (new tab open)
 socket.on('connect', function () {
 	console.log('connected to server');
+
+	// redirects the user to the specific chat room
+	var params = jQuery.deparam(window.location.search);
+
+	socket.emit('join', params, function (err) {
+		if (err) {
+			alert(err);
+			// users is redirected to homepage
+			window.location.href = '/';
+		} else {
+			console.log('No error');
+		}
+	});
+});
+
+// updates the users room list when someone joins
+
+socket.on('updateUserList', function (users) {
+	//console.log('Users list', users);
+	var ol = jQuery('<ol></ol>');
+
+	users.forEach(function (user) {
+		ol.append(jQuery('<li></li>').text(user));
+	});
+
+	jQuery('#users').html(ol);
 });
 
 // when a user disconnects from the app (closes the tab)
